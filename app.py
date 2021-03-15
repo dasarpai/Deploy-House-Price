@@ -4,8 +4,6 @@
 
 import numpy as np
 import json
-
-
 from flask import Flask, request, jsonify, render_template
 import pickle
 
@@ -17,16 +15,19 @@ with open("config.json", "r") as c:
 
 print (params)
 
+#Display main page only with menu.
 @app.route('/')
 def home():
     return render_template('index.html', params=params)
 
-
-@app.route("/house_price", methods=['GET', 'POST'])
+#Display main page which has form to enter parameters for prediction
+@app.route("/house_price", methods=['GET'])
 def house_price():
     return render_template('house_price.html', params=params)
 
-@app.route('/predict',methods=['POST','GET'])
+#when submit button is clicked from house_price page then this prediction will be done by this function
+#it returns the prediction to the same form.
+@app.route('/predict',methods=['POST'])
 def predict():
     features = [float(x) for x in request.form.values()]
     final_features = [np.array(features)]
@@ -34,6 +35,6 @@ def predict():
     output = round(prediction[0],2)
     return render_template('house_price.html',params=params, prediction_text= "House Price Shall be Around $: {:,}".format(output) )
 
-
+#Start the app
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=True)
