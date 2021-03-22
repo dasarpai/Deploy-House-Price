@@ -35,6 +35,15 @@ def predict():
     output = round(prediction[0],2)
     return render_template('house_price.html',params=params, prediction_text= "House Price Shall be Around $: {:,}".format(output) )
 
+#To serve api results.
+@app.route('/results',methods=['POST'])
+def results():
+    data = request.get_json(force=True)
+    prediction = model.predict([np.array(list(data.values()))])
+
+    output = prediction[0]
+    return jsonify(output)
+
 #Start the app
 if __name__ == "__main__":
     app.run(debug=True)
